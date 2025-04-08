@@ -1,75 +1,76 @@
-# Tarea 2: Dimensionamiento del Clúster de Hadoop
+# Task 2: Sizing the Hadoop Cluster
 
-<strong>El CEO está muy contento con el trabajo realizado y quiere apostar aún más por tecnologías Big Data. Está pensando en montar otra infraestructura Hadoop que procese eventos de películas provenientes de distintas fuentes (cines, plataformas de streaming, etc..) y necesita estimación del tamaño plataforma teniendo en cuenta que:
+<strong>The CEO is very pleased with the work done and wants to invest even more in Big Data technologies. He is considering setting up another Hadoop infrastructure to process movie events coming from various sources (cinemas, streaming platforms, etc.) and needs an estimate of the platform size considering the following:
 
-| Fuente    | Eventos diarios | Tamaño por Evento |
+| Source    | Daily Events    | Size per Event    |
 |-----------|-----------------|-------------------|
-| Fuente 1  | 10,000          | 15 KB             |
-| Fuente 2  | 120,000         | 300 Bytes         |
-| Fuente 3  | 150,000         | 100 KB            |
-| Fuente 4  | 170,000         | 800 KB            |
-| Fuente 5  | 2,000           | 1500 KB           |
+| Source 1  | 10,000          | 15 KB             |
+| Source 2  | 120,000         | 300 Bytes         |
+| Source 3  | 150,000         | 100 KB            |
+| Source 4  | 170,000         | 800 KB            |
+| Source 5  | 2,000           | 1500 KB           |
 
-Las características de las maquinas es que son capaces de tener hasta 22 discos de 2 TB para almacenamiento cada una. Indicar el número de máquinas necesarias para poder almacenar todo el volumen de datos durante el próximo año, así como la justificación de por qué se necesita dicha capacidad para un clúster Hadoop.</strong>
+The machine specifications are capable of having up to 22 disks of 2 TB for storage each. Indicate the number of machines required to store the total volume of data for the next year, as well as the justification for why such capacity is needed for a Hadoop cluster.</strong>
 
 ##
 
-Existen varios métodos para calcular el número de máquinas necesarias para almacenar datos en un cluster de Hadoop. Los dos métodos principales son los siguientes:
+There are several methods for calculating the number of machines needed to store data in a Hadoop cluster. The two main methods are as follows:
 
-## Cálculo mediante fórmula considerando compresión y reserva de espacio
-Este método utiliza la fórmula <code>H = c * r * S / (1 - i)</code> siendo el significado de las variables el siguiente:
+## Calculation Using a Formula Considering Compression and Reserved Space
 
-| Variable  | Significado                                                                                              |
-|-----------|----------------------------------------------------------------------------------------------------------|
-| H  | Capacidad total del clúster Hadoop necesaria (en TB, por ejemplo)                                               |
-| c  | Compresión de los datos (valor entre 0 y 1, donde 0.5 significa que se reduce a la mitad)                       |
-| r  | Factor de replicación de Hadoop (por defecto, 3)                                                                |
-| S  | Volumen original de datos (sin replicar ni comprimir)                                                           |
-| i  | Porcentaje de espacio que se reserva en HDFS para mantenimiento y funcionamiento (normalmente se usa 0.2 o 20%) |
+This method uses the formula <code>H = c * r * S / (1 - i)</code>, where the variables have the following meanings:
 
-Características de este método:
-* Considera compresión
-* Considera reserva de espacio en HDFS
-* Menos conservador
-* Menor coste estimado
-* Recomendado para un diseño técnico detallado
+| Variable  | Meaning                                                                                 |
+|-----------|-----------------------------------------------------------------------------------------|
+| H         | Total Hadoop cluster capacity required (in TB, for example)                             |
+| c         | Data compression (value between 0 and 1, where 0.5 means the data size is halved)       |
+| r         | Hadoop replication factor (default is 3)                                                |
+| S         | Original data volume (without replication or compression)                               |
+| i         | Percentage of space reserved in HDFS for maintenance and operation (usually 0.2 or 20%) |
 
-## Cálculo directo sin compresión
-Este método está basado en el volumen bruto de datos con replicación. Sus características son:
-* No considera compresión
-* No considera reserva de espacio en HDFS
-* Es más conservador
-* El coste estimado es mayor
-* Recomandado para una fase inicial o de incertidumbre
+Characteristics of This Method:
+* Considers compression
+* Considers space reserved in HDFS
+* Less conservative
+* Estimated lower cost
+* Recommended for detailed technical design
 
-Como en este caso se trata de una primera aproximación al diseño de un clúster en Hadoop y además se desconocen datos sobre la compresión o la reserva de espacio HDFS, se ha utilizado este segundo método para calcular las máquinas que harían falta.
+## Direct Calculation Without Compression
 
-Multiplicando el número de eventos diarios y el tamaño por evento se obtiene el volumen diario de datos:
+This method is based on the raw data volume with replication. Its characteristics are:
+* Does not consider compression
+* Does not consider space reserved in HDFS
+* More conservative
+* Estimated higher cost
+* Recommended for early phases or when there is uncertainty
 
-| Fuente    | Volumen Diario de Datos                          |
+Since this is an initial approximation for the design of a Hadoop cluster and data regarding compression or reserved HDFS space are unknown, this second method was used to calculate the necessary machines.
+
+By multiplying the number of daily events and the size per event, we obtain the daily data volume:
+
+| Source    | Daily Data Volume                                |
 |-----------|--------------------------------------------------|
-| Fuente 1  | 10,000 * 15 KB = 150,000 KB = 146.48 MB          |
-| Fuente 2  | 120,000 * 300 Bytes = 36,000,000 B = 34.33 MB    |
-| Fuente 3  | 150,000 * 100 KB = 15,000,000 KB = 14,648.44 MB  |
-| Fuente 4  | 170,000 * 800 KB = 136,000,000 KB = 132,812.5 MB |
-| Fuente 5  | 2,000 * 1500 KB = 3,000,000 KB = 2,929.69 MB     |
-> **Note:** Para realizar la conversión de tamaño de datos se ha utilizado el sistema binario (donde 1 MB equivale a 1,024 KB) más común en entornos técnicos y especialmente en Hadoop.
+| Source 1  | 10,000 * 15 KB = 150,000 KB = 146.48 MB          |
+| Source 2  | 120,000 * 300 Bytes = 36,000,000 B = 34.33 MB    |
+| Source 3  | 150,000 * 100 KB = 15,000,000 KB = 14,648.44 MB  |
+| Source 4  | 170,000 * 800 KB = 136,000,000 KB = 132,812.5 MB |
+| Source 5  | 2,000 * 1500 KB = 3,000,000 KB = 2,929.69 MB     |
+> **Note:** The data size conversion uses the binary system (where 1 MB equals 1,024 KB), which is common in technical environments and particularly in Hadoop.
 
-Total diario = 146.48 MB + 34.33 MB + 14,648.44 MB + 132,812.5 MB + 2,929.69 MB = 150,571.44 MB = 147.7 GB/día
+Total daily = 146.48 MB + 34.33 MB + 14,648.44 MB + 132,812.5 MB + 2,929.69 MB = 150,571.44 MB = 147.7 GB/day
 
-Como el consumo diario aproximado es de 147.7 GB, el consumo anual será de:
-147.7 GB/día * 365 días = 53,900.5 GB = 53.9 TB/año
+Since the approximate daily consumption is 147.7 GB, the annual consumption would be:
+147.7 GB/day * 365 days = 53,900.5 GB = 53.9 TB/year
 
-Como Hadoop HDFS tiene un factor de replicación por defecto de 3, es decir, cada bloque de datos se almacena 3 veces para tolerancia de fallor, el volumen total con replicación será el triple. El valomen real con replicación es de 161.7 TB.
+As Hadoop HDFS has a default replication factor of 3, meaning each data block is stored three times for fault tolerance, the total volume with replication will be three times the original. The actual volume with replication is 161.7 TB.
 
-Cada máquina tiene 22 discos dfe 2 TB, o lo que es lo mismo, existen 44 TB disponibles por máquina. Sin embargo, no toda la capacidad se puede destinar al almacenamiento de datos. Normalmente se reserva parte del disco para el sistema operativo, logs y/ buffers. Suponiendo que se destina el 90% de la capacidad para almacenamiento, la capacidad disponible por máquina es de 39.8 TB.
+Each machine has 22 disks of 2 TB, so there is a total of 44 TB available per machine. However, not all the capacity can be allocated to data storage. Typically, part of the disk is reserved for the operating system, logs, and buffers. Assuming that 90% of the capacity is allocated for storage, the usable capacity per machine is 39.8 TB.
 
-Dividiendo el volumen total entre la capacidad útil por máquina de obtiene el número teórico de máquinas necesarias:
-161.7 TB / 39.6 TB ≈ 4.08
+By dividing the total volume by the usable capacity per machine, we obtain the theoretical number of required machines: 161.7 TB / 39.6 TB ≈ 4.08
 
-Como debemos ser conservadores y, por tanto, redondea hacia arriba para asegurarnos de que se cumplen las necesidades, el número de máquinas necesarias es 5. Estas máquinas irían destinadas a almacenamiento de datos, por tanto, se tratarían de DataNodes. Sin embargo, sería necesario contar con una máquina adicional como NameNode, siendo necesario, por tanto, <strong>6 máquinas</strong> para garantizar alta disponibilidad. De esta forma se cumple con el almacenamiento del primer año.
+Since we must be conservative and round up to ensure the needs are met, the number of required machines is 5. These machines will be used for data storage, so they will be DataNodes. However, an additional machine is necessary as a NameNode, so the total number of machines required is 6 to ensure high availability.
 
-## Conclusiones
-Hadoop no solo almacena los datos, también los procesa distribuida y paralelamente. El factor de replicación garantiza tolerancia a fallos, pero, por otro lado, triplica el almacenamiento necesario. Además, se requiere espacio adicional para archivos temporales, resultados intermedios, logs, y otros procesos de MapReduce. Tener varias máquinas permite escalar el procesamiento también en paralelo, siendo clave para una analítica eficiente.
+## Conclusion
+Hadoop not only stores the data, but it also processes it in a distributed and parallel manner. The replication factor ensures fault tolerance, but on the other hand, it triples the required storage. Additionally, extra space is needed for temporary files, intermediate results, logs, and other MapReduce processes. Having multiple machines allows scaling the processing in parallel, which is key for efficient analytics.
 
-En el caso de haber hecho los cálculos mediante el primer método, considerando un factor de compresión de 0.5 (los datos se reducen a la mitad), un factor de replicación de 3 y una reserva de HDFS de 0.2, serían necesarias mínimo 3 máquinas, sin embargo, debemos ser conservadores en este primer diseño y optar por garantizar la arquitectura. Después del primer año, se podría volver a revisar esta aproximación y dimensionar de nuevo el clúster.
+If we had used the first method to calculate, considering a compression factor of 0.5 (data is reduced by half), a replication factor of 3, and a reserved HDFS space of 0.2, only 3 machines would have been required. However, we need to be conservative in this initial design and opt to ensure the architecture. After the first year, this approach can be revisited and the cluster size re-evaluated.
