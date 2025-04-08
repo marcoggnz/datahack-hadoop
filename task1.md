@@ -6,14 +6,14 @@ As mentioned in the [README.md](README.md), this task was completed on a virtual
 
 First, open the command line and create a new directory named <code>dataset-hadoop</code> in the path <code>/home/cloudera/dh-course/dataset-hadoop</code>. Then, copy the three files that will be used throughout the task from the repository https://github.com/dgarciaesc/sample_dataset:
 
-* <strong>movies.dat</strong>: contiene información sobre películas, incluyendo su ID, título, y género al que pertenecen. 
-* <strong>users.dat</strong>: contiene información de los usuarios que publican calificaciones sobre las películas. Esta base de datos incluye el ID de cada usuario, género, edad, profesión, y código postal de residencia.
-* <strong>ratings.dat</strong>: contiene información sobre el ID de usuario, ID de la película, la calificación y la variable timestamp.
-> **Note:** La información detallada sobre la estructura y las variables de los 3 ficheros se encuentra explicada en [README.txt](https://github.com/marcoggnz/hadoop/blob/main/data/README.txt).
+* <strong>movies.dat</strong>: contains information about movies, including their ID, title, and genre.
+* <strong>users.dat</strong>: contains information about users who rate the movies. This database includes the ID of each user, gender, age, profession, and postal code.
+* <strong>ratings.dat</strong>: contains information about the user ID, movie ID, rating, and timestamp.
+> **Note:** Detailed information about the structure and variables of these 3 files can be found in [README.txt](https://github.com/marcoggnz/hadoop/blob/main/data/README.txt).
 
 ![image](https://github.com/user-attachments/assets/e89e96fd-6210-4970-aa5a-47dc18cd5ba4)
 
-Se puede comprobar que los datos se encuentran almacenados correctamente mostrando el contenido de las primeras filas de cada archivo mostrando las primeras filas de cada archivo:
+You can check that the data is stored correctly by displaying the content of the first rows of each file:
 
 ```
 head -n 5 ratings.dat
@@ -23,33 +23,34 @@ head -n 5 movies.dat
 
 ![image](https://github.com/user-attachments/assets/cb7fad58-26fd-4566-86e9-b7639b525b43)
 
-Una vez los achivos se encuentran en el directorio creado, se debe garantizar que no haya problemas de permisos durante el desarrollo de la tarea. Para ello se garantizan permisos de lectura, escritura y ejecución a todos estos ficheros mediante los comandos que aparecen a continuación:
+Once the files are in the created directory, make sure there are no permission issues during the task development. Ensure read, write, and execute permissions for all these files by running the following commands:
 
 ```
 chmod 777 movies.dat
 chmod 777 ratings.dat
 chmod 777 users.dat
 ```
-## Creación de la Base de Datos
+## Database Creation
 
-Una vez se ha preparado el entorno, se debe crear primero la base de datos en Hive. Para ello se accede primero al entorno Hive:
+Once the environment is set up, the first step is to create the database in Hive. To do this, access the Hive environment:
 
 ```
 hive
 ```
 
-Una vez dentro de Hive, se crea la base de datos:
+Once inside Hive, create the database:
+
 ```
 CREATE DATABASE IF NOT EXIST ex1;
 SHOW DATABASES;
 USE ex1;
 ```
 
-Esta base de datos se almacena en la ruta <code>/usr/hive/warehouse</code>. A continuación, se crean las tablas con los datos que se van a utilizar.
+This database is stored at the path <code>/usr/hive/warehouse</code>. Next, create the tables with the data to be used.
 
-### Tabla Movies
+### Movies Table
 
-Para la creación de la tabla de películas, se utilizan los siguientes comandos:
+To create the movies table, use the following commands:
 
 ```
 CREATE TABLE movies (
@@ -61,17 +62,17 @@ ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe'
 WITH SERDEPROPERTIES ("field.delim"="::");
 ```
 
-Los tres archivos de datos tienen dos puntos (::) como delimitadores de columnas, por tanto, hay que tener esto en cuenta a la hora de crear las tablas.
+The three data files use double colons (::) as column delimiters, so keep this in mind when creating the tables.
 
-A continuación, se debe mover el fichero <code> movies.dat</code> del sistema de ficheros local a HDFS mediante el comando:
+Next, move the <code> movies.dat</code> file from the local filesystem to HDFS using the command:
 
 ```
 hdfs dfs -put /home/cloudera/dh-course/dataset-hadoop/movies.dat /user/cloudera/movies/
 ```
 
-### Tabla Users
+### Users Table
 
-De forma similar a como se ha creado la tabla de películas se crea la tabla de usuarios:
+Similarly to how the movies table was created, create the users table:
 
 ```
 CREATE TABLE users (
@@ -85,15 +86,15 @@ ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe'
 WITH SERDEPROPERTIES ("field.delim"="::");
 ```
 
-Esta tabla se encuentra en la ruta <code>/user/hive/warehouse/ex1.db</code>. A continuación, se copia el archivo que contiene los datos desde el directorio local al entorno HDFS:
+This table is located at the path <code>/user/hive/warehouse/ex1.db</code>. Next, copy the users data file from the local directory to the HDFS environment:
 
 ```
 hdfs dfs -put /home/cloudera/dh-course/dataset-hadoop/users.dat /user/cloudera/users/
 ```
 
-### Tabla Ratings
+### Ratings Table
 
-Por último, se crea la tercera de las tablas (ratings) con el siguiente comando:
+Lastly, create the third table (ratings) with the following command:
 
 ```
 CREATE TABLE ratings (
@@ -106,13 +107,13 @@ ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe'
 WITH SERDEPROPERTIES ("field.delim"="::");
 ```
 
-Esta tabla se almacena en la misma ruta que el resto de tablas <code>/user/hive/warehouse/ex1.db</code>. Una vez creada esta tabla, se cargan los datos del fichero que contiene las calificaciones desde el entorno local al entorno Hive:
+This table is stored in the same path as the other tables: <code>/user/hive/warehouse/ex1.db</code>. Once this table is created, load the data from the ratings file into Hive:
 
 ```
 hdfs dfs -put /home/cloudera/dh-course/dataset-hadoop/ratings.dat /user/cloudera/ratings/
 ```
 
-Para terminar la preparación, se deben cargar los datos en las tablas de Hive mediante los siguientes comandos:
+To finish preparation, load the data into the Hive tables with the following commands:
 
 ```
 LOAD DATA INPATH '/user/cloudera/movies/movies.dat' INTO TABLE movies;
@@ -120,7 +121,7 @@ LOAD DATA INPATH '/user/cloudera/users/users.dat' INTO TABLE users;
 LOAD DATA INPATH '/user/cloudera/ratings/ratings.dat' INTO TABLE ratings;
 ```
 
-Una simple consulta permite comprobar que los datos están guardados correctamente:
+A simple query can check that the data has been stored correctly:
 
 ```
 SELECT * FROM movies LIMIT 10;
@@ -130,13 +131,13 @@ SELECT * FROM ratings LIMIT 10;
 
 ![image](https://github.com/user-attachments/assets/2992fa5d-4763-42f8-bcf0-3824f0cc5e2e)
 
-### Ejercicio 1
+### Exercise 1
 
-<strong>De cara a definir por qué genero apostar, identificar los influencers que pueden potenciar el marketing de MovieBuster y definir una estrategia de publicidad, el CEO te pide averiguar los siguientes datos del momento de mercado actúal:</strong>
+<strong>To define which genre to bet on, identify influencers who can boost MovieBuster's marketing, and define an advertising strategy, the CEO asks you to find out the following current market data:</strong>
 
-<strong>1. ¿Cuál es la película con más opiniones?</strong>
+<strong>1. What is the movie with the most reviews?</strong>
 
-Consulta utilizada:
+Query used:
 
 ```
 SELECT m.title, COUNT(*) AS num_ratings
@@ -149,11 +150,11 @@ LIMIT 1;
 
 ![image](https://github.com/user-attachments/assets/aa41c802-b03c-45ae-9fe5-d652de82be58)
 
-La película con mayor número de opiniones es American Beauty con un total de 3428 opiniones recibidas.
+The movie with the most reviews is "American Beauty" with a total of 3428 reviews.
 
-<strong>2. ¿Qué 10 usuarios son los más activos a la hora de puntuar películas?</strong>
+<strong>2. What are the top 10 users most active in rating movies?
 
-Consulta utilizada:
+Query used:
 
 ```
 SELECT user_id, COUNT(*) AS total_reviews
@@ -165,13 +166,12 @@ LIMIT 10;
 
 ![image](https://github.com/user-attachments/assets/e8d142b1-e2bd-44ed-97bb-75b2b75e5f1b)
 
-Los 10 ID de usuario que han publicado mayor número de reviews son 4169, 1680, 4277, 1941, 1181, 889, 3618, 2063, 1150 y 1015. 
+The top 10 user IDs who have posted the most reviews are 4169, 1680, 4277, 1941, 1181, 889, 3618, 2063, 1150, and 1015.
 
-<strong>3. ¿Cuáles son las tres mejores películas según los scores? Y las tres peores?</strong>
+<strong>3. What are the top three movies according to their ratings? And the bottom three?</strong>
 
-Consulta utilizada para obtener las 3 mejores películas:
-> **Note:** Para realizar esta consulta se han tenido en cuenta películas que han recibido al menos 100 valoraciones.
-
+Query used for the top 3 movies:
+> **Note:** For this query, we considered movies with at least 100 reviews.
 ```
 SELECT m.title, AVG(r.rating) AS avg_rating, COUNT(*) AS total_ratings
 FROM ratings r
@@ -184,10 +184,10 @@ LIMIT 3;
 
 ![image](https://github.com/user-attachments/assets/b58da9c8-c8a9-4ed0-8581-3db503e99f67)
 
-Las 3 mejores películas (con al menos 100 valoraciones) según las calificaciones son Seven Samurai (The Magnificent Seven), The Shawshank Redemptiony The Godfather, con una valoración de 4.56, 4.55 y 4.52, respectivamente.
+The top 3 movies (with at least 100 reviews) according to ratings are "Seven Samurai" (The Magnificent Seven), "The Shawshank Redemption", and "The Godfather", with ratings of 4.56, 4.55, and 4.52, respectively.
 
-Consulta utilizada para obtener las 3 peores películas:
-> **Note:** Para realizar esta consulta se han tenido en cuenta películas que han recibido al menos 100 valoraciones.
+Query used for the bottom 3 movies:
+> **Note:** For this query, we considered movies with at least 100 reviews.
 
 ```
 SELECT m.title, AVG(r.rating) AS avg_rating, COUNT(*) AS total_ratings
@@ -201,11 +201,11 @@ LIMIT 3;
 
 ![image](https://github.com/user-attachments/assets/26224197-977b-402a-a8d6-80d2a7fcbe60)
 
-Las 3 peores películas (con al menos 100 valoraciones) según las calificaciones son Kazaam, Battlefield Earth y Pokemon the Movie, con una valoración de 1.47, 1.61, 1.62, respectivamente.
+The bottom 3 movies (with at least 100 reviews) according to ratings are "Kazaam", "Battlefield Earth", and "Pokemon the Movie", with ratings of 1.47, 1.61, and 1.62, respectively.
 
-<strong>4. ¿Hay alguna profesión en la que deberíamos enfocar nuestros esfuerzos en publicidad? ¿Por qué?</strong>
+<strong>4. Is there any profession where we should focus our advertising efforts? Why?</strong>
 
-Consulta utilizada:
+Query used:
 
 ```
 SELECT u.occupation, COUNT(*) AS total_ratings
@@ -218,11 +218,11 @@ LIMIT 1;
 
 ![image](https://github.com/user-attachments/assets/6d5d3f28-1a9d-44d5-b480-b687d71b9750)
 
-La profesión con mayor número de valoraciones es la que se corresponde con el número 4. Si se consulta el archivo [README.txt](data/README.txt) se aprecia que es la profesión de "college/grad student".
+The profession with the most ratings is number 4. According to the file [README.txt](data/README.txt), this is the profession of "college/grad student".
 
-<strong>5. Se te ocurre algún otro insight valioso que pudiéramos extraer de los datos procesados? Cómo?</strong>
+<strong>5. Do you have any other valuable insight we could extract from the processed data? How?</strong>
 
-Una consulta interesante sería saber la relación entre la edad del usuario y las puntuaciones. La consulta que se ha utilizado es:
+One interesting query would be the relationship between the user's age and their ratings. The query used is:
 
 ```
 SELECT u.age, AVG(r.rating) AS avg_rating
@@ -234,27 +234,27 @@ ORDER BY u.age;
 
 ![image](https://github.com/user-attachments/assets/3f22e729-2cd0-4527-9304-1bd0bf81419d)
 
-Con estos resultados se puede llegar a las siguientes conclusiones:
+From the results, the following conclusions can be drawn:
 
-| Edad  | Rating medio | Interpretación                                                |
-|-------|--------------|---------------------------------------------------------------|
-| <18   | 3.55         | Jóvenes valoran bien, aunque no destacan demasiado            |
-| 18-24 | 3.51         | Segmento joven adulto es el más exigente (rating más bajo)    |
-| 24-34 | 3.55         | Muy similar a los menores de 18                               |
-| 35-44 | 3.62         | Aumenta la puntuación. Quizás menos críticos o gustos amplios |
-| 44-49 | 3.64         | Más alta aún                                                  |
-| 50-55 | 3.71         | Mucho más positivos                                           |
-| >56   | 3.77         | Los más positivos de todos                                    |
+| Age   | Avg Rating   | Interpretation                                            |
+|-------|--------------|-----------------------------------------------------------|
+| <18   | 3.55         | Young people rate well, but not excessively               |
+| 18-24 | 3.51         | Young adults are the most critical (lowest rating)        |
+| 24-34 | 3.55         | Very similar to those under 18                            |
+| 35-44 | 3.62         | Rating increases. Perhaps less critical or broader tastes |
+| 44-49 | 3.64         | Even higher                                               |
+| 50-55 | 3.71         | Much more positive                                        |
+| >56   | 3.77         | The most positive of all                                  |
 
-### Ejercicio 2
+### Exercise 2
 
-<strong>El CEO está preocupado con la eficiencia de las queries usadas para extraer los datos de los ejercicios prácticos #1 y #2 y exige poder ver estos resultados desde una web.</strong>
+<strong>The CEO is concerned about the efficiency of the queries used to extract data for exercises #1 and #2 and wants to be able to view these results on a website.</strong>
 
-<strong>1. Implementa, a través de Sqoop, una BBDD relacional en MySQL que contenga al menos los datos de uno de los insights extraídos en el ejercicio práctico #1</strong>
+<strong>1. Implement, through Sqoop, a relational database in MySQL that contains at least the data from one of the insights extracted in exercise #1</strong>
 
-Para relizar este ejercicio se ha elegido el insight "Top 10 de usuarios más activos en puntuaciones de películas" del ejercicio 1.
+For this exercise, we chose the insight "Top 10 most active users in rating movies" from Exercise 1.
 
-Primero se vuelve a ejecutar la consulta guardándose el resultado en la tabla top_users:
+First, re-run the query and save the result in the <code>top_users</code> table:
 
 ```
 CREATE TABLE top_users AS
@@ -265,7 +265,7 @@ ORDER BY num_ratings DESC
 LIMIT 10;
 ```
 
-Mediante el siguiente comando, se confirma que la tabla ha sido creada correctamente:
+Confirm that the table has been created correctly:
 
 ```
 SELECT * FROM top_users;
@@ -274,26 +274,27 @@ SELECT * FROM top_users;
 
 ![image](https://github.com/user-attachments/assets/cc99ed0d-bfbf-469c-bdbd-e5fee474edc6)
 
-A continuación, se accede a MySQL con el siguiente comando:
+Next, access MySQL with the following command:
 
 ```
 mysql -uroot -pcloudera
 ```
 
-Y se crea una nueva database con el nombre 'ex1' en MySQL:
+Then, create a new database named  <code>ex1</code> in MySQL:
+
 ```
 CREATE DATABASE ex1;
 ```
 
 ![image](https://github.com/user-attachments/assets/41cb158e-a369-45d8-98b9-85ce4d6ec813)
 
-Y se cambia el database al que se acaba de crear:
+Change the database to the one just created:
 
 ```
 USE ex1;
 ```
  
-Dentro de este database se crea la tabla top_users:
+Within this database, create the <code>top_users</code> table:
 
 ```
 CREATE TABLE top_users (
@@ -302,28 +303,28 @@ CREATE TABLE top_users (
 );
 ```
 
-Por último, con la ayuda de sqoop se exporta la tabla desde Hive a MySQL ejecutando el siguiente comando en el sistema de archivos local:
+Lastly, use Sqoop to export the table from Hive to MySQL by running the following command on the local file system:
  
 ```
 sqoop export --connect jdbc:mysql://localhost/ex1 --table top_users --export-dir /user/hive/warehouse/ex1.db/top_users_export --input-fields-terminated-by '\t' --username root --password cloudera --num-mappers 1 
 ```
 
-Una vez realizada la exportación, se verifican los resultados en MySQL:
+Once the export is done, check the results in MySQL:
 
 ![image](https://github.com/user-attachments/assets/264f054a-46ab-42d9-9940-e2df47164b61)
 
-Ya estaría creada correctamente la tabla en MySQL. El siguiente paso sería programar una pequeña app en Python o Node.js para poder conectarse a MySQL y mostrar los resultados, o bien conectarse desde una herramienta de visualización como Grafana.
+The table should now be correctly created in MySQL. The next step would be to program a small app in Python or Node.js to connect to MySQL and display the results, or use a visualization tool like Grafana.
 
-<strong>2. Por qué hacemos esto y no accedemos directamente a los resultados del ejercicio #1?</strong>
+<strong>2. Why do we do this and not access the results directly from exercise #1?</strong>
 
-Existen varias la razones para pensar que la mejor opción es exportar los datos a MySQL si se quieren visualizar en una aplicación web. En la siguiente tabla se muestran las caracter´isticas principales de HIVE/HDFS y MySQL (RDBMS):
+There are several reasons why exporting the data to MySQL is a better option if we want to visualize it on a web application. The table below shows the main characteristics of HIVE/HDFS and MySQL (RDBMS):
 
-| Hive/HDFS  | MySQL/RDBMS                                                                                 |
-|------------|---------------------------------------------------------------------------------------------|
-| Diseñado para procesamiento batch en Big Data   | Diseñado para acceso rápido a datos estructurados      |
-| Altísima latencia para pequeñas queries| 	Muy baja latencia para búsquedas rápidas                       |
-| No apto para servir datos en tiempo real (web/API) | Ideal para servir resultados a una web o aplicación |
-| Gran capacidad de almacenamiento | Excelente integración con frontends y APIs                            |
-| No soporta bien updates/inserts frecuentes | Ideal para cambios dinámicos y transacciones                |
+| Hive/HDFS                                         | MySQL/RDBMS                                       |
+|---------------------------------------------------|---------------------------------------------------|
+| Designed for batch processing in Big Data         | Designed for fast access to structured data       |
+| Very high latency for small queries               | 	Very low latency for fast queries               |
+| Not suitable for serving real-time data (web/API) | Ideal for serving results to a web or application |
+| Great storage capacity                            | Excellent integration with frontends and APIs     |
+| Does not support frequent updates/inserts         | Ideal for dynamic changes and transactions        |
 
-Por tanto, mientras que Hive es ideal para procesamiento y análisis masivo, MySQL se comporta de manera más eficiente cuando se tienen que realizar consultas rápidas y servir datos en una web en tiempo real.
+Therefore, while Hive is ideal for large-scale data processing and analysis, MySQL performs much more efficiently when fast queries and real-time web access are needed.
