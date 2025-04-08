@@ -1,4 +1,4 @@
-# Tarea 1: Cluster Deployment and Query Execution
+# Task 1: Cluster Deployment and Query Execution
 
 As mentioned in the [README.md](README.md), this task was completed on a virtual machine configured in Cloudera.
 
