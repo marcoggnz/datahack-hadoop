@@ -20,9 +20,9 @@ One of the most popular use cases of Hadoop is processing user data to implement
 
 The main objective of this project is to create the analytics department from scratch. This department's primary function is to extract and analyze the necessary data to generate insights that will allow the executive board to define the startup's strategy.
 The project consists of three tasks. The development of each of them is detailed below in the following files:
-* [Task 1](task1.md)
-* [Task 2](task2.md)
-* [Task 3](task3.md)
+* [Task 1: Cluster Deployment and Query Execution](task1.md)
+* [Task 2: Sizing the Hadoop Cluster](task2.md)
+* [Tarea 3: Estimating Hadoop Architectures for Different Use Cases](task3.md)
 
 > **Note:** This project was developed on a local Cloudera virtual machine, which is a preconfigured cluster.
 
