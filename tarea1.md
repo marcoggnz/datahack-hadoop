@@ -1,10 +1,10 @@
-# Tarea 1: Despliegue del Cluster y Realización de Consultas
+# Tarea 1: Cluster Deployment and Query Execution
 
-Como aparece mencionado en el [README.md](README.md) esta tarea se ha realizado sobre una máquina virtual configurada en Cloudera.
+As mentioned in the [README.md](README.md), this task was completed on a virtual machine configured in Cloudera.
 
-## Ingestión de datos en Hadoop
+## Data Ingestion in Hadoop
 
-Para empezar, se abre la línea de comandos y se crea un directorio nuevo con el nombre <code>dataset-hadoop</code> en la ruta <code>/home/cloudera/dh-course/dataset-hadoop</code>. A continuación, se copian los tres archivos que se van a utilizar a lo largo de la tarea desde el repositorio https://github.com/dgarciaesc/sample_dataset:
+First, open the command line and create a new directory named <code>dataset-hadoop</code> in the path <code>/home/cloudera/dh-course/dataset-hadoop</code>. Then, copy the three files that will be used throughout the task from the repository https://github.com/dgarciaesc/sample_dataset:
 
 * <strong>movies.dat</strong>: contiene información sobre películas, incluyendo su ID, título, y género al que pertenecen. 
 * <strong>users.dat</strong>: contiene información de los usuarios que publican calificaciones sobre las películas. Esta base de datos incluye el ID de cada usuario, género, edad, profesión, y código postal de residencia.
